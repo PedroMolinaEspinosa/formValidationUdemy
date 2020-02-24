@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 30,
                 ),
-                _crearBoton(),
+                _crearBoton(bloc),
               ],
             ),
           ),
@@ -82,7 +82,8 @@ class LoginPage extends StatelessWidget {
                     color: Colors.deepPurple,
                   ),
                   hintText: "ejemplo@correo.es",
-                  labelText: "Correo electrónico"),
+                  labelText: "Correo electrónico",
+                  errorText: snapShot.error),
               onChanged: bloc.changeEmail,
             ),
           );
@@ -104,7 +105,8 @@ class LoginPage extends StatelessWidget {
                   Icons.lock_outline,
                   color: Colors.deepPurple,
                 ),
-                labelText: "Contraseña"),
+                labelText: "Contraseña",
+                errorText: snapShot.error),
             onChanged: bloc.changePassword,
           ),
         );
@@ -172,17 +174,32 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _crearBoton() {
-    return RaisedButton(
-      onPressed: () {},
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
-        child: Text("Ingresar"),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 0.0,
-      color: Colors.deepPurple,
-      textColor: Colors.white,
+  Widget _crearBoton(LoginBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.formValidStream,
+      builder: (context, snapshot) {
+        return RaisedButton(
+          onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
+            child: Text("Ingresar"),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0.0,
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+        );
+      },
     );
+  }
+
+  _login(LoginBloc bloc, BuildContext context) {
+    print('==============');
+    print('Email:  ${bloc.email}');
+    print('Password: ${bloc.password}');
+    print('==============');
+
+    Navigator.pushReplacementNamed(context, 'home');
   }
 }
